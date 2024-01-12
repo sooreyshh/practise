@@ -1,0 +1,42 @@
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class PhoneNumberMaskingExample {
+    public static void main(String[] args) {
+        String inputString = "Please contact us at +1 (555) 123-4567 or 555-234-5678 for assistance.";
+
+        // Mask phone numbers in the input string
+        String maskedString = maskPhoneNumbers(inputString);
+
+        // Print the masked string
+        System.out.println("Original String: " + inputString);
+        System.out.println("Masked String: " + maskedString);
+    }
+
+    private static String maskPhoneNumbers(String input) {
+        // Use regex to find and mask phone numbers
+        Matcher matcher = Pattern.compile("\\+?\\d{1,4}?[\\s.-]?\\(?(\\d{3})\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}")
+                .matcher(input);
+
+        StringBuffer maskedString = new StringBuffer();
+
+        while (matcher.find()) {
+            String phoneNumber = matcher.group();
+            String maskedPhoneNumber = maskSensitiveData(phoneNumber.replaceAll("[^\\d]", ""));
+            matcher.appendReplacement(maskedString, maskedPhoneNumber);
+        }
+
+        matcher.appendTail(maskedString);
+
+        return maskedString.toString();
+    }
+
+    private static String maskSensitiveData(String data) {
+        // Implement your masking logic here (e.g., replace digits with asterisks)
+        if (data != null && data.length() > 4) {
+            String lastFourDigits = data.substring(data.length() - 4);
+            return "*".repeat(data.length() - 4) + lastFourDigits;
+        }
+        return null;
+    }
+}

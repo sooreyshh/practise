@@ -1,0 +1,37 @@
+public class JsonMaskingExample {
+    public static void main(String[] args) {
+        String jsonString = "{\"phonenumber\":\"1231231231\",\"name\":\"test\"}";
+
+        // Mask the phone number in the JSON string
+        String maskedJsonString = maskPhoneNumber(jsonString);
+
+        System.out.println("Original JSON: " + jsonString);
+        System.out.println("Masked JSON: " + maskedJsonString);
+    }
+
+    private static String maskPhoneNumber(String jsonString) {
+        // Find the start and end indexes of the phone number
+        int startIndex = jsonString.indexOf("\"phonenumber\"") + "\"phonenumber\"".length() + 3; // 3 for ":"
+        int endIndex = jsonString.indexOf(",", startIndex);
+        if (endIndex == -1) {
+            endIndex = jsonString.indexOf("}", startIndex);
+        }
+
+        // Extract the phone number substring
+        String phoneNumberSubstring = jsonString.substring(startIndex, endIndex);
+
+        // Mask the phone number value
+        String maskedPhoneNumber = maskSensitiveData(phoneNumberSubstring);
+
+        // Replace the original phone number with the masked one
+        return jsonString.replace(phoneNumberSubstring, maskedPhoneNumber);
+    }
+
+    private static String maskSensitiveData(String data) {
+        // Implement your masking logic here (e.g., replace digits with asterisks)
+        if (data != null) {
+            return data.replaceAll("\\d", "*");
+        }
+        return null;
+    }
+}
